@@ -1,0 +1,33 @@
+ // {
+ //     "name": "bpm-meter",
+ //     "version": "0.0.1",
+ //     "description": "shows your tempo",
+ //     "manifest_version": 2,
+ //     "permissions": [
+ //        //"background",
+ //        "tabs",
+ //        "activeTab",
+ //        "<all_urls>"
+ //     ],
+ //     "background": {
+ //         "scripts": ["background.js"]
+ //     }
+ // }
+
+
+ {
+  "name": "Page Redder",
+  "description": "Make the current page red",
+  "version": "2.0",
+  "permissions": [
+    "activeTab"
+  ],
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": false
+  },
+  "browser_action": {
+    "default_title": "Make this page red"
+  },
+  "manifest_version": 2
+}
