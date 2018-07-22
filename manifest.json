@@ -1,0 +1,24 @@
+{
+    "name": "bpm-meter",
+    "version": "0.0.1",
+    "description": "shows your tempo",
+    "manifest_version": 2,
+    "permissions": [
+        "tabs",
+        "activeTab",
+        "<all_urls>"
+    ],
+    "background": {
+        "scripts": [
+            "proxy-importer.js",
+            "background.js"
+        ]
+        // "persistent": false
+    },
+    "content_scripts": [{
+        "matches": ["https://*/*"],
+        "js": ["content.js"],
+        "run_at": "document_start"
+    }],
+    "browser_action": {}
+}
