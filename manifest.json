@@ -6,19 +6,17 @@
     "permissions": [
         "tabs",
         "activeTab",
+        "tabCapture",
         "<all_urls>"
     ],
     "background": {
         "scripts": [
-            "proxy-importer.js",
             "background.js"
-        ]
-        // "persistent": false
+        ],
+        "persistent": true
     },
-    "content_scripts": [{
-        "matches": ["https://*/*"],
-        "js": ["content.js"],
-        "run_at": "document_start"
-    }],
-    "browser_action": {}
+    "browser_action": {
+        "default_title": "bpm-beter",
+        "default_popup": "popup.html"
+    }
 }
