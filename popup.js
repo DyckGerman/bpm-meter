@@ -13,50 +13,64 @@ document.addEventListener('DOMContentLoaded', function() {
 
             console.log('bg.analyser  = ' + bg.analyser);
 
-            var bufferLength = 2048;
+            var bufferLength = 65536;
             var dataArray = new Uint8Array(bufferLength);
-            // analyser.getByteTimeDomainData(dataArray);
+            var fftArray = new Uint8Array(bufferLength);
+            var myfftArray = null;
 
             // Get a canvas defined with ID "oscilloscope"
             var canvas = document.getElementById("oscilloscope");
             var canvasCtx = canvas.getContext("2d");
 
+            var canvas2 = document.getElementById("oscilloscope2");
+            var canvasCtx2 = canvas2.getContext("2d");
+
             // draw an oscilloscope of the current audio source
 
             function draw() {
-
                 requestAnimationFrame(draw);
-                if (!bg.analyser) return;
 
                 bg.analyser.getByteTimeDomainData(dataArray);
+                bg.analyser.getByteFrequencyData(fftArray);
+                // myfftArray = fft(dataArray, bufferLength);
+    
+                drawInner(canvasCtx, fftArray);
+                drawInner(canvasCtx2, myfftArray);
+            }
 
-                canvasCtx.fillStyle = "rgb(200, 200, 200)";
-                canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
+            function drawInner(ctx, data) {
 
-                canvasCtx.lineWidth = 2;
-                canvasCtx.strokeStyle = "rgb(0, 0, 0)";
+                if (!bg.analyser) return;
 
-                canvasCtx.beginPath();
+                ctx.fillStyle = "rgb(200, 200, 200)";
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-                var sliceWidth = canvas.width * 1.0 / bufferLength;
+                ctx.lineWidth = 2;
+                ctx.strokeStyle = "rgb(0, 0, 0)";
+
+                ctx.beginPath();
+
+                var sliceWidth = canvas.width * 1.0 / 128;
                 var x = 0;
 
-                for (var i = 0; i < bufferLength; i++) {
+                for (var i = 0; i < 120; i++) {
 
-                    var v = dataArray[i] / 128.0;
-                    var y = v * canvas.height / 2;
+                    // var v = myfftArray[i] / 256.0;
+                    var v = data[i] / 256.0;
+                    var y = v * canvas.height;
+                    y = canvas.height - y;
 
                     if (i === 0) {
-                        canvasCtx.moveTo(x, y);
+                        ctx.moveTo(x, y);
                     } else {
-                        canvasCtx.lineTo(x, y);
+                        ctx.lineTo(x, y);
                     }
 
                     x += sliceWidth;
                 }
-
-                canvasCtx.lineTo(canvas.width, canvas.height / 2);
-                canvasCtx.stroke();
+                ctx.lineTo(x, canvas.height);
+                ctx.lineTo(canvas.width, canvas.height / 2);
+                ctx.stroke();
             }
 
             draw();
@@ -67,3 +81,25 @@ document.addEventListener('DOMContentLoaded', function() {
         type: msgTypes.POPUP_LOADED
     });
 });
+
+
+const pi = 3.14159;
+
+function fft(array, n, k) {
+    let result = new Float32Array(n);
+
+    for (let i = 0; i < k; i++) {
+        let reSum = 0;
+        let imSum = 0;
+
+        for (let j = 0; j < n; j++) {
+            reSum += Math.cos(2 * pi * j * i / n) * array[j];
+            imSum += Math.sin(2 * pi * j * i / n) * array[j];
+
+        }
+
+        result[i] = Math.sqrt(reSum * reSum + imSum * imSum);
+    }
+
+    return result;
+}

@@ -21,8 +21,9 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
                 source.connect(analyser);
                 analyser.connect(ctx.destination);
     
-                analyser.fftSize = 2048;
-                fpoints = new Float32Array(2048);
+                analyser.fftSize = 65536;
+                smoothingTimeConstant = 0;
+                fpoints = new Float32Array(128);
                 analyser.getFloatFrequencyData(fpoints);
                 var a = 5;
     
@@ -35,3 +36,5 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
         });
     }
 });
+
+
